@@ -1,0 +1,28 @@
+// Bootstrap
+@import "_bootstrap.scss";
+
+// Gral.
+@import "_variables";
+
+//
+// Media Queries
+//
+
+// -- Dispositivos extra pequeños - smartphones - menores a 768px.
+// -- * Bootstrap utiliza Mobile First por lo que esta medida no usa MediaQuerie.
+@import "layouts/_start-320-xs";
+
+// -- Dispositivos pequeños - tablets - 768px para arriba.
+@media (min-width: $screen-sm-min) {
+	@import "layouts/_768-sm";
+}
+
+// -- Dispositivos intermedios - desktops - 992px para arriba.
+@media (min-width: $screen-md-min) {
+	@import "layouts/_992-md";
+}
+
+// -- Dispositivos grandes - desktops widescreens - 1200px para arriba.
+@media (min-width: $screen-lg-min) {
+	@import "layouts/_1200-lg";
+}
