@@ -8,7 +8,7 @@
 		},
 		"main.min.css": {
 			"files": [
-				"sass/main.scss"
+				"scss/main.scss"
 			],
 			"main": true
 		}

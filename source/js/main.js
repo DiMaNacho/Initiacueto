@@ -1,4 +1,4 @@
 function appStart() {
-	console.log('Todo perfecto!');
+	console.log('Todo loco!');
 }
 $(document).on('ready', appStart);
