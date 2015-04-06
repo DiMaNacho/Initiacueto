@@ -1,0 +1,23 @@
+{
+	"dependencies": {
+		"main.min.js": {
+			"files": [
+				"js/**.js"
+			],
+			"main": true
+		},
+		"main.min.css": {
+			"files": [
+				"sass/main.scss"
+			],
+			"main": true
+		}
+	},
+	"paths": {
+		"source": "source/",
+		"dist": "assets/"
+	},
+	"config": {
+		"devUrl": "initiacueto:8888"
+	}
+}
