@@ -8,10 +8,10 @@
 	"private": true,
 	"dependencies": {
 		"bootstrap-sass": "3.3.6"
-		},
-		"overrides": {
-			"bootstrap-sass": {
-				"main": [
+	},
+	"overrides": {
+		"bootstrap-sass": {
+			"main": [
 				"./assets/stylesheets/_bootstrap.scss",
 				"./assets/javascripts/bootstrap/transition.js",
 				"./assets/javascripts/bootstrap/alert.js",
@@ -30,8 +30,7 @@
 				"./assets/fonts/bootstrap/glyphicons-halflings-regular.ttf",
 				"./assets/fonts/bootstrap/glyphicons-halflings-regular.woff",
 				"./assets/fonts/bootstrap/glyphicons-halflings-regular.woff2"
-				]
-			}
+			]
 		}
 	}
 }

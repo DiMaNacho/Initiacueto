@@ -1,15 +1,27 @@
 // ## Globals
-/*global $:true*/
-var $           = require('gulp-load-plugins')();
-var argv        = require('yargs').argv;
-var browserSync = require('browser-sync');
-var gulp        = require('gulp');
-var lazypipe    = require('lazypipe');
-var merge       = require('merge-stream');
-var runSequence = require('run-sequence');
+var argv         = require('minimist')(process.argv.slice(2));
+var autoprefixer = require('gulp-autoprefixer');
+var browserSync  = require('browser-sync').create();
+var changed      = require('gulp-changed');
+var concat       = require('gulp-concat');
+var flatten      = require('gulp-flatten');
+var gulp         = require('gulp');
+var gulpif       = require('gulp-if');
+var imagemin     = require('gulp-imagemin');
+var jshint       = require('gulp-jshint');
+var lazypipe     = require('lazypipe');
+var less         = require('gulp-less');
+var merge        = require('merge-stream');
+var minifyCss    = require('gulp-minify-css');
+var plumber      = require('gulp-plumber');
+var rev          = require('gulp-rev');
+var runSequence  = require('run-sequence');
+var sass         = require('gulp-sass');
+var sourcemaps   = require('gulp-sourcemaps');
+var uglify       = require('gulp-uglify');
 
 // See https://github.com/austinpray/asset-builder
-var manifest = require('asset-builder')('./assets/manifest.json');
+var manifest = require('asset-builder')('./src/manifest.json');
 
 // `path` - Paths to base asset directories. With trailing slashes.
 // - `path.source` - Path to the source files. Default: `assets/`
@@ -64,35 +76,41 @@ var revManifest = path.dist + 'assets.json';
 var cssTasks = function(filename) {
   return lazypipe()
     .pipe(function() {
-      return $.if(!enabled.failStyleTask, $.plumber());
+      return gulpif(!enabled.failStyleTask, plumber());
     })
     .pipe(function() {
-      return $.if(enabled.maps, $.sourcemaps.init());
-    })
-      .pipe(function() {
-        return $.if('*.less', $.less());
-      })
-      .pipe(function() {
-        return $.if('*.scss', $.sass({
-          outputStyle: 'nested', // libsass doesn't support expanded yet
-          precision: 10,
-          includePaths: ['.'],
-          errLogToConsole: !enabled.failStyleTask
-        }));
-      })
-      .pipe($.concat, filename)
-      .pipe($.autoprefixer, {
-        browsers: [
-          'last 2 versions', 'ie 8', 'ie 9', 'android 2.3', 'android 4',
-          'opera 12'
-        ]
-      })
-      .pipe($.minifyCss)
-    .pipe(function() {
-      return $.if(enabled.rev, $.rev());
+      return gulpif(enabled.maps, sourcemaps.init());
     })
     .pipe(function() {
-      return $.if(enabled.maps, $.sourcemaps.write('.'));
+      return gulpif('*.less', less());
+    })
+    .pipe(function() {
+      return gulpif('*.scss', sass({
+        outputStyle: 'nested', // libsass doesn't support expanded yet
+        precision: 10,
+        includePaths: ['.'],
+        errLogToConsole: !enabled.failStyleTask
+      }));
+    })
+    .pipe(concat, filename)
+    .pipe(autoprefixer, {
+      browsers: [
+        'last 2 versions',
+        'android 4',
+        'opera 12'
+      ]
+    })
+    .pipe(minifyCss, {
+      advanced: false,
+      rebase: false
+    })
+    .pipe(function() {
+      return gulpif(enabled.rev, rev());
+    })
+    .pipe(function() {
+      return gulpif(enabled.maps, sourcemaps.write('.', {
+        sourceRoot: 'src/css/'
+      }));
     })();
 };
 
@@ -106,15 +124,21 @@ var cssTasks = function(filename) {
 var jsTasks = function(filename) {
   return lazypipe()
     .pipe(function() {
-      return $.if(enabled.maps, $.sourcemaps.init());
+      return gulpif(enabled.maps, sourcemaps.init());
     })
-    .pipe($.concat, filename)
-    .pipe($.uglify)
-    .pipe(function() {
-      return $.if(enabled.rev, $.rev());
+    .pipe(concat, filename)
+    .pipe(uglify, {
+      compress: {
+        'drop_debugger': enabled.stripJSDebug
+      }
     })
     .pipe(function() {
-      return $.if(enabled.maps, $.sourcemaps.write('.'));
+      return gulpif(enabled.rev, rev());
+    })
+    .pipe(function() {
+      return gulpif(enabled.maps, sourcemaps.write('.', {
+        sourceRoot: 'src/js/'
+      }));
     })();
 };
 
@@ -124,10 +148,8 @@ var jsTasks = function(filename) {
 var writeToManifest = function(directory) {
   return lazypipe()
     .pipe(gulp.dest, path.dist + directory)
-    .pipe(function() {
-      return $.if('**/*.{js,css}', browserSync.reload({stream:true}));
-    })
-    .pipe($.rev.manifest, revManifest, {
+    .pipe(browserSync.stream, {match: '**/*.{js,css}'})
+    .pipe(rev.manifest, revManifest, {
       base: path.dist,
       merge: true
     })
@@ -155,7 +177,7 @@ gulp.task('styles', ['wiredep'], function() {
       .pipe(cssTasksInstance));
   });
   return merged
-    .pipe(writeToManifest('css'));
+    .pipe(writeToManifest('styles'));
 });
 
 // ### Scripts
@@ -170,7 +192,7 @@ gulp.task('scripts', ['jshint'], function() {
     );
   });
   return merged
-    .pipe(writeToManifest('js'));
+    .pipe(writeToManifest('scripts'));
 });
 
 // ### Fonts
@@ -178,20 +200,22 @@ gulp.task('scripts', ['jshint'], function() {
 // structure. See: https://github.com/armed/gulp-flatten
 gulp.task('fonts', function() {
   return gulp.src(globs.fonts)
-    .pipe($.flatten())
-    .pipe(gulp.dest(path.dist + 'fonts'));
+    .pipe(flatten())
+    .pipe(gulp.dest(path.dist + 'fonts'))
+    .pipe(browserSync.stream());
 });
 
 // ### Images
 // `gulp images` - Run lossless compression on all the images.
 gulp.task('images', function() {
   return gulp.src(globs.images)
-    .pipe($.imagemin({
+    .pipe(imagemin({
       progressive: true,
       interlaced: true,
-      svgoPlugins: [{removeUnknownsAndDefaults: false}]
+      svgoPlugins: [{removeUnknownsAndDefaults: false}, {cleanupIDs: false}]
     }))
-    .pipe(gulp.dest(path.dist + 'images'));
+    .pipe(gulp.dest(path.dist + 'images'))
+    .pipe(browserSync.stream());
 });
 
 // ### JSHint
@@ -200,9 +224,9 @@ gulp.task('jshint', function() {
   return gulp.src([
     'bower.json', 'gulpfile.js'
   ].concat(project.js))
-    .pipe($.jshint())
-    .pipe($.jshint.reporter('jshint-stylish'))
-    .pipe($.jshint.reporter('fail'));
+    .pipe(jshint())
+    .pipe(jshint.reporter('jshint-stylish'))
+    .pipe(gulpif(enabled.failJSHint, jshint.reporter('fail')));
 });
 
 // ### Clean
@@ -216,17 +240,19 @@ gulp.task('clean', require('del').bind(null, [path.dist]));
 // build step for that asset and inject the changes into the page.
 // See: http://www.browsersync.io
 gulp.task('watch', function() {
-  browserSync({
+  browserSync.init({
+    files: ['src/php/*.php'],
     proxy: config.devUrl
   });
+
   gulp.watch([path.source + 'scss/**/*'], ['styles']);
   gulp.watch([path.source + 'js/**/*'], ['jshint', 'scripts']);
   gulp.watch([path.source + 'fonts/**/*'], ['fonts']);
   gulp.watch([path.source + 'img/**/*'], ['images']);
-  gulp.watch(['bower.json', 'assets/manifest.json'], ['build']);
-  gulp.watch(['**/*.php', '**/*.html', '**/*.htm'], function() {
-    browserSync.reload();
-  });
+  gulp.watch(['bower.json', 'src/manifest.json'], ['build']);
+  // gulp.watch(['**/*.php', '**/*.html', '**/*.htm'], function() {
+  //   browserSync.reload();
+  // });
 });
 
 // ### Build
@@ -246,8 +272,8 @@ gulp.task('wiredep', function() {
   var wiredep = require('wiredep').stream;
   return gulp.src(project.css)
     .pipe(wiredep())
-    .pipe($.changed(path.source + 'scss', {
-      hasChanged: $.changed.compareSha1Digest
+    .pipe(changed(path.source + 'scss', {
+      hasChanged: changed.compareSha1Digest
     }))
     .pipe(gulp.dest(path.source + 'scss'));
 });
