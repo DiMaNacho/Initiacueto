@@ -221,7 +221,9 @@ gulp.task('images', function() {
 // ### Template
 // `gulp template` - Mueve a dist los archivos php y html y ejecuta un reload en browserSync.
 gulp.task('template', function() {
-    browserSync.reload();
+  return gulp.src(globs.fonts)
+    .pipe(gulp.dest(path.dist))
+    .pipe(browserSync.stream());
 });
 
 // ### JSHint
