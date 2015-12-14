@@ -14,8 +14,8 @@
 		}
 	},
 	"paths": {
-		"source": "source/",
-		"dist": "assets/"
+		"source": "src/",
+		"dist": "public/"
 	},
 	"config": {
 		"devUrl": "initiacueto:8888"

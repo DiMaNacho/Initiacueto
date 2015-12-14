@@ -177,7 +177,7 @@ gulp.task('styles', ['wiredep'], function() {
       .pipe(cssTasksInstance));
   });
   return merged
-    .pipe(writeToManifest('styles'));
+    .pipe(writeToManifest('css'));
 });
 
 // ### Scripts
@@ -192,7 +192,7 @@ gulp.task('scripts', ['jshint'], function() {
     );
   });
   return merged
-    .pipe(writeToManifest('scripts'));
+    .pipe(writeToManifest('js'));
 });
 
 // ### Fonts
@@ -214,8 +214,14 @@ gulp.task('images', function() {
       interlaced: true,
       svgoPlugins: [{removeUnknownsAndDefaults: false}, {cleanupIDs: false}]
     }))
-    .pipe(gulp.dest(path.dist + 'images'))
+    .pipe(gulp.dest(path.dist + 'img'))
     .pipe(browserSync.stream());
+});
+
+// ### Template
+// `gulp template` - Mueve a dist los archivos php y html y ejecuta un reload en browserSync.
+gulp.task('template', function() {
+    browserSync.reload();
 });
 
 // ### JSHint
@@ -241,7 +247,7 @@ gulp.task('clean', require('del').bind(null, [path.dist]));
 // See: http://www.browsersync.io
 gulp.task('watch', function() {
   browserSync.init({
-    files: ['src/php/*.php'],
+    files: [path.source + '/php/*.php', path.source + '/*.{html,htm}'],
     proxy: config.devUrl
   });
 
@@ -249,10 +255,8 @@ gulp.task('watch', function() {
   gulp.watch([path.source + 'js/**/*'], ['jshint', 'scripts']);
   gulp.watch([path.source + 'fonts/**/*'], ['fonts']);
   gulp.watch([path.source + 'img/**/*'], ['images']);
+  gulp.watch([path.source + '/php/*.php', path.source + '/*.{html,htm}'], ['template']);
   gulp.watch(['bower.json', 'src/manifest.json'], ['build']);
-  // gulp.watch(['**/*.php', '**/*.html', '**/*.htm'], function() {
-  //   browserSync.reload();
-  // });
 });
 
 // ### Build
