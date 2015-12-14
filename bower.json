@@ -1,44 +1,17 @@
 {
 	"name": "initiacueto",
-	"homepage": "https://roots.io/sage/",
+	"homepage": "http://github.com/DiMaNacho/Initiacueto.git",
 	"authors": [
 		"DiMaNacho <dimanacho@obrusly.com>"
 	],
 	"license": "MIT",
 	"private": true,
 	"dependencies": {
-		"modernizr": "2.8.2",
-		"jquery": "1.11.2",
-		"bootstrap": "3.3.4"
-	},
-	"overrides": {
-		"modernizr": {
-			"main": "./modernizr.js"
+		"bootstrap-sass": "3.3.6"
 		},
-		"bootstrap": {
-			"main": [
-				"./less/bootstrap.less",
-				"./js/transition.js",
-				"./js/alert.js",
-				"./js/button.js",
-				"./js/carousel.js",
-				"./js/collapse.js",
-				"./js/dropdown.js",
-				"./js/modal.js",
-				"./js/tooltip.js",
-				"./js/popover.js",
-				"./js/scrollspy.js",
-				"./js/tab.js",
-				"./js/affix.js",
-				"./fonts/glyphicons-halflings-regular.eot",
-				"./fonts/glyphicons-halflings-regular.svg",
-				"./fonts/glyphicons-halflings-regular.ttf",
-				"./fonts/glyphicons-halflings-regular.woff",
-				"./fonts/glyphicons-halflings-regular.woff2"
-			]
-		},
-		"bootstrap-sass-official": {
-			"main": [
+		"overrides": {
+			"bootstrap-sass": {
+				"main": [
 				"./assets/stylesheets/_bootstrap.scss",
 				"./assets/javascripts/bootstrap/transition.js",
 				"./assets/javascripts/bootstrap/alert.js",
@@ -57,7 +30,8 @@
 				"./assets/fonts/bootstrap/glyphicons-halflings-regular.ttf",
 				"./assets/fonts/bootstrap/glyphicons-halflings-regular.woff",
 				"./assets/fonts/bootstrap/glyphicons-halflings-regular.woff2"
-			]
+				]
+			}
 		}
 	}
 }
