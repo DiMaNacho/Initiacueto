@@ -19,7 +19,7 @@ var runSequence  = require('run-sequence');
 var sass         = require('gulp-sass');
 var sourcemaps   = require('gulp-sourcemaps');
 var uglify       = require('gulp-uglify');
-var php          = require('gulp-connect-php');
+var connect      = require('gulp-connect-php');
 
 // See https://github.com/austinpray/asset-builder
 var manifest = require('asset-builder')('./src/manifest.json');
@@ -233,15 +233,9 @@ gulp.task('jshint', function() {
 // ### Template
 // `gulp template` - Mueve a dist los archivos php y html y ejecuta un reload en browserSync.
 gulp.task('template', function() {
-  return gulp.src([path.source + '/php/*.php', path.source + '/*.html', path.source + '/*.htm'], {base: './src'})
+  return gulp.src([path.source + '/php/*.{php,html,htm}', path.source + '/*.{php,html,htm}'], {base: './src'})
     .pipe(gulp.dest(path.dist))
     .pipe(browserSync.stream());
-});
-
-// ### PHP
-// `gulp php` - Servidor con soporte PHP
-gulp.task('php', function() {
-  php.server({ base: 'build', port: 8010, keepalive: true});
 });
 
 // ### Clean
@@ -254,19 +248,40 @@ gulp.task('clean', require('del').bind(null, [path.dist]));
 // `manifest.config.devUrl`. When a modification is made to an asset, run the
 // build step for that asset and inject the changes into the page.
 // See: http://www.browsersync.io
-gulp.task('watch',['php'], function() {
+gulp.task('watch', function() {
   browserSync.init({
-    proxy: '127.0.0.1:8010',
-    port: 8080,
-    open: true,
-    notify: false
+    files: [path.source + '/php/*.{php,html,htm}', path.source + '/*.{php,html,htm}'],
+    server: "./public",
+    open: false
   });
 
   gulp.watch([path.source + 'scss/**/*'], ['styles']);
   gulp.watch([path.source + 'js/**/*'], ['jshint', 'scripts']);
   gulp.watch([path.source + 'fonts/**/*'], ['fonts']);
   gulp.watch([path.source + 'img/**/*'], ['images']);
-  gulp.watch([path.source + '/php/*.php', path.source + '/*.html', path.source + '/*.htm'], ['template']);
+  gulp.watch([path.source + '/php/*.{php,html,htm}', path.source + '/*.{php,html,htm}'], ['template']);
+  gulp.watch(['bower.json', 'src/manifest.json'], ['build']);
+});
+
+// ### WatchPHP
+// Igual que el watch anterior, pero con soporte a PHP.
+gulp.task('watchphp', function() {
+  connect.server({
+    base: './public',
+    keepalive: true,
+  }, function (){
+    browserSync.init({
+      files: [path.source + '/php/*.{php,html,htm}', path.source + '/*.{php,html,htm}'],
+      proxy: "localhost:8000",
+      open: true
+    });
+  });
+
+  gulp.watch([path.source + 'scss/**/*'], ['styles']);
+  gulp.watch([path.source + 'js/**/*'], ['jshint', 'scripts']);
+  gulp.watch([path.source + 'fonts/**/*'], ['fonts']);
+  gulp.watch([path.source + 'img/**/*'], ['images']);
+  gulp.watch([path.source + '/php/*.{php,html,htm}', path.source + '/*.{php,html,htm}'], ['template']);
   gulp.watch(['bower.json', 'src/manifest.json'], ['build']);
 });
 
