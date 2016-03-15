@@ -236,7 +236,7 @@ gulp.task('jshint', function() {
 // ### Template
 // `gulp template` - Mueve a dist los archivos php y html y ejecuta un reload en browserSync.
 gulp.task('template', function() {
-  return gulp.src([path.source + '/php/*.{php,html,htm}', path.source + '/*.{php,html,htm}'], {base: './src'})
+  return gulp.src([path.source + 'php-html/*.{php,html,htm}', path.source + 'php-html/**/*.{php,html,htm}'], {base: './src'})
     .pipe(gulp.dest(path.dist))
     .pipe(browserSync.stream());
 });
@@ -262,7 +262,7 @@ gulp.task('watch', function() {
   gulp.watch([path.source + 'js/**/*'], ['jshint', 'scripts']);
   gulp.watch([path.source + 'fonts/**/*'], ['fonts']);
   gulp.watch([path.source + 'img/**/*'], ['images']);
-  gulp.watch([path.source + '/php/*.{php,html,htm}', path.source + '/*.{php,html,htm}'], ['template']);
+  gulp.watch([path.source + 'php-html/*.{php,html,htm}', path.source + 'php-html/**/*.{php,html,htm}'], ['template']);
   gulp.watch(['bower.json', 'src/manifest.json'], ['build']);
 });
 
@@ -284,7 +284,7 @@ gulp.task('watchphp', function() {
   gulp.watch([path.source + 'js/**/*'], ['jshint', 'scripts']);
   gulp.watch([path.source + 'fonts/**/*'], ['fonts']);
   gulp.watch([path.source + 'img/**/*'], ['images']);
-  gulp.watch([path.source + '/php/*.{php,html,htm}', path.source + '/*.{php,html,htm}'], ['template']);
+  gulp.watch([path.source + 'php-html/*.{php,html,htm}', path.source + 'php-html/**/*.{php,html,htm}'], ['template']);
   gulp.watch(['bower.json', 'src/manifest.json'], ['build']);
 });
 
