@@ -58,7 +58,11 @@ var enabled = {
   // Disable source maps when `--production`
   maps: !argv.production,
   // Fail styles task on error when `--production`
-  failStyleTask: argv.production
+  failStyleTask: argv.production,
+  // Fail due to JSHint warnings only when `--production`
+  failJSHint: argv.production,
+  // Strip debug statments from javascript when `--production`
+  stripJSDebug: argv.production
 };
 
 // Path to the compiled assets manifest in the dist directory
@@ -101,9 +105,8 @@ var cssTasks = function(filename) {
         'opera 12'
       ]
     })
-    .pipe(minifyCss, {
-      advanced: false,
-      rebase: false
+    .pipe(cssNano, {
+      safe: true
     })
     .pipe(function() {
       return gulpif(enabled.rev, rev());
@@ -178,7 +181,7 @@ gulp.task('styles', ['wiredep'], function() {
       .pipe(cssTasksInstance));
   });
   return merged
-    .pipe(writeToManifest('css'));
+    .pipe(writeToManifest('styles'));
 });
 
 // ### Scripts
