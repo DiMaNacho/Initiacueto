@@ -1,6 +1,3 @@
-// Bootstrap
-@import "_bootstrap.scss";
-
 // Gral.
 @import "_variables";
 
@@ -13,16 +10,16 @@
 @import "layouts/_start-320-xs";
 
 // -- Dispositivos pequeños - tablets - 768px para arriba.
-@media (min-width: $screen-sm-min) {
+@media (min-width: 768px) {
 	@import "layouts/_768-sm";
 }
 
 // -- Dispositivos intermedios - desktops - 992px para arriba.
-@media (min-width: $screen-md-min) {
+@media (min-width: 992px) {
 	@import "layouts/_992-md";
 }
 
 // -- Dispositivos grandes - desktops widescreens - 1200px para arriba.
-@media (min-width: $screen-lg-min) {
+@media (min-width: 1200px) {
 	@import "layouts/_1200-lg";
 }
