@@ -5,5 +5,8 @@
 		"DiMaNacho <dimanacho@obrusly.com>"
 	],
 	"license": "MIT",
-	"private": true
+	"private": true,
+	"dependencies": {
+		"jquery": "2.2.2"
+	}
 }

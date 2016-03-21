@@ -212,7 +212,7 @@ gulp.task('fonts', function() {
 // ### Images
 // `gulp images` - Run lossless compression on all the images.
 gulp.task('images', function() {
-  return gulp.src(globs.images)
+  return gulp.src(path.source + 'img/**/*')
     .pipe(imagemin({
       progressive: true,
       interlaced: true,
@@ -236,7 +236,7 @@ gulp.task('jshint', function() {
 // ### Template
 // `gulp template` - Mueve a dist los archivos php y html y ejecuta un reload en browserSync.
 gulp.task('template', function() {
-  return gulp.src([path.source + 'php-html/**/*'])
+  return gulp.src([path.source + 'php-html/**/*', path.source + 'icons/**/*'])
     .pipe(gulp.dest(path.dist))
     .pipe(browserSync.stream());
 });
@@ -262,7 +262,7 @@ gulp.task('watchnophp', function() {
   gulp.watch([path.source + 'js/**/*'], ['jshint', 'scripts']);
   gulp.watch([path.source + 'fonts/**/*'], ['fonts']);
   gulp.watch([path.source + 'img/**/*'], ['images']);
-  gulp.watch([path.source + 'php-html/**/*'], ['template']);
+  gulp.watch([path.source + 'php-html/**/*', path.source + 'icons/**/*'], ['template']);
   gulp.watch(['bower.json', 'src/manifest.json'], ['build']);
 });
 
@@ -284,7 +284,7 @@ gulp.task('watch', function() {
   gulp.watch([path.source + 'js/**/*'], ['jshint', 'scripts']);
   gulp.watch([path.source + 'fonts/**/*'], ['fonts']);
   gulp.watch([path.source + 'img/**/*'], ['images']);
-  gulp.watch([path.source + 'php-html/**/*'], ['template']);
+  gulp.watch([path.source + 'php-html/**/*', path.source + 'icons/**/*'], ['template']);
   gulp.watch(['bower.json', 'src/manifest.json'], ['build']);
 });
 

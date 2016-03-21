@@ -1,3 +1,13 @@
-body {
-	background: green;
+.navbar-inverse {
+	background-color: #F16529;
+	border-color: #E44D26;
+	border-width: 0 0 10px;
+
+	.navbar-brand {
+		color: #FFF;
+		font-family: Lora,serif;
+		font-size: 3em;
+		font-weight: bold;
+		text-shadow: 0 -2px 2px rgba(0, 0, 0, 0.1);
+	}
 }
