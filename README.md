@@ -12,45 +12,23 @@ Este template surgió a raíz del proyecto [SAGE](https://github.com/roots/sage)
 * [asset-builder](https://github.com/austinpray/asset-builder) for the JSON file based asset pipeline
 * [Bootstrap](http://getbootstrap.com/)
 
-## Theme development
+## Desarrollo en el template
 
-Sage uses [gulp](http://gulpjs.com/) as its build system and [Bower](http://bower.io/) to manage front-end packages.
+Initiacueto usa [gulp](http://gulpjs.com/) y [Bower](http://bower.io/) para el manejo de paquetes.
 
-### Install gulp and Bower
+### Instalar gulp y Bower
 
-Building the theme requires [node.js](http://nodejs.org/download/). We recommend you update to the latest version of npm: `npm install -g npm@latest`.
+Este template requiere de [node.js](http://nodejs.org/download/). Y te recomiendo que siempre actualices a la última versión de NPM: `npm install -g npm@latest`.
 
-From the command line:
+Pasos desde el terminal:
 
-1. Install [gulp](http://gulpjs.com) and [Bower](http://bower.io/) globally with `npm install -g gulp bower`
-2. Navigate to the theme directory, then run `npm install`
-3. Run `bower install`
+1. Instalar y/o actualizar [gulp](http://gulpjs.com) y [Bower](http://bower.io/) globalmente con `npm install -g gulp bower`
+2. Navegar hasta el directorio del proyecto y luego correr `npm install`
+3. Correr `bower install`
 
-You now have all the necessary dependencies to run the build process.
+Ya tenés todas las dependencias necesarias para poder trabajar sobre el build.
 
-### Available gulp commands
+### Comandos de GULP disponibles:
 
-* `gulp` — Compile and optimize the files in your assets directory
-* `gulp watch` — Compile assets when file changes are made
-* `gulp --production` — Compile assets for production (no source maps).
-
-### Using BrowserSync
-
-To use BrowserSync during `gulp watch` you need to update `devUrl` at the bottom of `assets/manifest.json` to reflect your local development hostname.
-
-For example, if your local development URL is `http://project-name.dev` you would update the file to read:
-```json
-...
-  "config": {
-    "devUrl": "http://project-name.dev"
-  }
-...
-```
-If your local development URL looks like `http://localhost:8888/project-name/` you would update the file to read:
-```json
-...
-  "config": {
-    "devUrl": "http://localhost:8888/project-name/"
-  }
-...
-```
+* `gulp` — Compila y optimiza todos los archivos e imágenes que están dentro de `src` y deja el resultado en `public'.
+* `gulp watch` — Mismo que lo anterior, pero en segundo plano revisa continuamente los cambios en los distintos archivos e integra BrowserSync para ver el resultado en tiempo real.
